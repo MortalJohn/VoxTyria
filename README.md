@@ -100,7 +100,7 @@ The icon can be hidden via **Hide Menu Icon** in the settings window. The module
 
 > **Requirements:** [Blish HUD](https://blishhud.com/) must already be installed and running. No other downloads needed.
 
-1. Go to the [Releases](https://github.com/MortalJohn/VoxTyria/releases) page and download `VoxTyria_0.2.0.bhm`.
+1. Go to the [Releases](https://github.com/MortalJohn/VoxTyria/releases) page and download `VoxTyria.bhm`.
 2. Drop the file into your Blish HUD modules folder:
    ```
    Documents\Guild Wars 2\addons\blishhud\modules\
