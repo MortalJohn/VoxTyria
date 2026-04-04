@@ -1,0 +1,7 @@
+bin/
+obj/
+
+# Whisper GGML model files — too large for source control.
+# Set the path in Blish HUD Ghost Typist settings instead.
+*.bin
+*.gguf
