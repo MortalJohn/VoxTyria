@@ -80,10 +80,18 @@ The module adds a small icon to the Blish HUD corner icon tray:
 
 ## Installation
 
-1. Download the latest `.bhm` file from the [Releases](../../releases) page.
-2. Place it in your Blish HUD modules folder (`Documents\Guild Wars 2\addons\blishhud\modules\`).
-3. Enable **Vox Tyria** in the Blish HUD module list.
-4. On first use, the required Whisper model (~40 MB for Tiny) will download automatically.
+> **Requirements:** [Blish HUD](https://blishhud.com/) must already be installed and running. No other downloads needed.
+
+1. Go to the [Releases](https://github.com/MortalJohn/VoxTyria/releases) page and download `VoxTyria_0.1.0.bhm`.
+2. Drop the file into your Blish HUD modules folder:
+   ```
+   Documents\Guild Wars 2\addons\blishhud\modules\
+   ```
+3. Restart Blish HUD (or click **Reload Modules** in the settings).
+4. Go to **Settings → Modules**, find **Vox Tyria**, and enable it.
+5. On first use the module will automatically download the Whisper speech model (~40 MB). Your corner icon will turn green once it's ready.
+
+That's it — press **F10** (configurable) to start recording, press again to send.
 
 ---
 
