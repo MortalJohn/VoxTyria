@@ -1,0 +1,82 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <AssemblyName>VoxTyria</AssemblyName>
+    <RootNamespace>VoxTyria</RootNamespace>
+    <Version>0.1.0</Version>
+    <!--
+      Must be true so NAudio, Whisper.net, etc. are copied to the output and
+      bundled into the .bhm. BlishHUD's own DLLs are excluded separately via
+      ExcludeAssets="runtime" on their PackageReference below.
+    -->
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <Nullable>disable</Nullable>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!--
+      MEF (Managed Extensibility Framework) is part of .NET Framework 4.7.2
+      but is not auto-referenced in SDK-style projects — required for
+      [Export], [Import], and [ImportingConstructor] attributes.
+    -->
+    <Reference Include="System.ComponentModel.Composition" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!--
+      BlishHUD NuGet provides the compile-time references.
+      ExcludeAssets="runtime" prevents Blish HUD's own DLLs from being
+      copied to the build output — the host provides them at runtime.
+    -->
+    <PackageReference Include="BlishHUD" Version="*">
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+
+    <!-- Phase 2: NAudio for microphone capture -->
+    <PackageReference Include="NAudio" Version="*" />
+
+    <!-- Phase 3: Whisper.net for local speech-to-text (no API key required) -->
+    <PackageReference Include="Whisper.net" Version="*" />
+    <!-- Whisper.net.Runtime ships the CPU-optimised whisper.cpp native binary -->
+    <PackageReference Include="Whisper.net.Runtime" Version="*" />
+  </ItemGroup>
+
+  <!--
+    Strip non-Windows and non-x64 whisper.cpp native binaries from the output
+    directory BEFORE the BlishHUD packaging target zips it into a .bhm.
+    AfterTargets="CopyFilesToOutputDirectory" runs during the Build target, so
+    it completes before any AfterTargets="Build" post-processors (including the
+    BlishHUD zip step) execute — giving us a clean win-x64-only bundle.
+  -->
+  <!--
+    Copy the win-x64 whisper native DLLs into ref/natives/ so that
+    ContentsManager.GetFileStream("natives/<name>") can read them at runtime.
+    Must run after TrimNonWindowsRuntimes so only the win-x64 files are present.
+  -->
+  <Target Name="CopyWhisperNativesToRef" AfterTargets="TrimNonWindowsRuntimes">
+    <ItemGroup>
+      <_WhisperNatives Include="$(OutputPath)runtimes\win-x64\*.dll" />
+    </ItemGroup>
+    <MakeDir Directories="$(OutputPath)ref\natives\" />
+    <Copy SourceFiles="@(_WhisperNatives)" DestinationFolder="$(OutputPath)ref\natives\" />
+  </Target>
+
+  <Target Name="TrimNonWindowsRuntimes" AfterTargets="CopyFilesToOutputDirectory">
+    <ItemGroup>
+      <_RuntimeDirsToTrim Include="$(OutputPath)runtimes\linux-arm\" />
+      <_RuntimeDirsToTrim Include="$(OutputPath)runtimes\linux-arm64\" />
+      <_RuntimeDirsToTrim Include="$(OutputPath)runtimes\linux-x64\" />
+      <_RuntimeDirsToTrim Include="$(OutputPath)runtimes\macos-arm64\" />
+      <_RuntimeDirsToTrim Include="$(OutputPath)runtimes\macos-x64\" />
+      <_RuntimeDirsToTrim Include="$(OutputPath)runtimes\win-arm64\" />
+      <_RuntimeDirsToTrim Include="$(OutputPath)runtimes\win-x86\" />
+    </ItemGroup>
+    <RemoveDir Directories="@(_RuntimeDirsToTrim)" />
+    <!-- ggml-metal.metal is a macOS-only Metal shader — not needed on Windows -->
+    <Delete Files="$(OutputPath)ggml-metal.metal" />
+    <Message Text="VoxTyria: trimmed non-win-x64 Whisper runtimes from output." Importance="high" />
+  </Target>
+
+</Project>
