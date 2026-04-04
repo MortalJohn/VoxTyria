@@ -42,7 +42,7 @@ namespace VoxTyria {
         /// Throws <see cref="InvalidOperationException"/> if already recording
         /// or if no recording devices are available.
         /// </summary>
-        public void StartRecording() {
+        public void StartRecording(string preferredDeviceName = null) {
             if (_disposed) throw new ObjectDisposedException(nameof(AudioRecorder));
             if (_isRecording) throw new InvalidOperationException("Already recording.");
             if (WaveIn.DeviceCount == 0)
@@ -50,10 +50,21 @@ namespace VoxTyria {
 
             _captureBuffer = new MemoryStream();
 
+            int deviceIndex = 0;
+            if (!string.IsNullOrWhiteSpace(preferredDeviceName)) {
+                for (int i = 0; i < WaveIn.DeviceCount; i++) {
+                    var caps = WaveIn.GetCapabilities(i);
+                    if (caps.ProductName == preferredDeviceName) {
+                        deviceIndex = i;
+                        break;
+                    }
+                }
+            }
+
             _waveIn = new WaveInEvent {
                 WaveFormat  = RecordingFormat,
-                DeviceNumber = 0,            // default device
-                BufferMilliseconds = 100     // 100 ms chunks — low latency without excess overhead
+                DeviceNumber = deviceIndex,
+                BufferMilliseconds = 100
             };
 
             _writer = new WaveFileWriter(_captureBuffer, _waveIn.WaveFormat);
@@ -63,6 +74,17 @@ namespace VoxTyria {
 
             _waveIn.StartRecording();
             _isRecording = true;
+        }
+        /// <summary>
+        /// Returns a list of available microphone device names.
+        /// </summary>
+        public static string[] GetAvailableDeviceNames() {
+            int count = WaveIn.DeviceCount;
+            string[] names = new string[count];
+            for (int i = 0; i < count; i++) {
+                names[i] = WaveIn.GetCapabilities(i).ProductName;
+            }
+            return names;
         }
 
         /// <summary>
