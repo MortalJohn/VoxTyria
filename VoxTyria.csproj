@@ -61,6 +61,8 @@
     </ItemGroup>
     <MakeDir Directories="$(OutputPath)ref\natives\" />
     <Copy SourceFiles="@(_WhisperNatives)" DestinationFolder="$(OutputPath)ref\natives\" />
+    <!-- Remove the runtimes folder so the .bhm zip doesn't include duplicate native DLLs -->
+    <RemoveDir Directories="$(OutputPath)runtimes\" />
   </Target>
 
   <Target Name="TrimNonWindowsRuntimes" AfterTargets="CopyFilesToOutputDirectory">
