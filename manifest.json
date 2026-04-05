@@ -1,15 +1,18 @@
 {
   "name":        "Vox Tyria",
-  "namespace":   "MortalJohn.VoxTyria",
+  "namespace":   "mortaljohn.voxtyria",
   "version":     "0.2.0",
   "manifest_version": 1,
-  "author": {
-    "name":     "MortalJohn",
-    "username": "MortalJohn"
-  },
+  "contributors": [
+    {
+      "name":     "MortalJohn",
+      "username": "MortalJohn",
+      "url":      "https://github.com/MortalJohn"
+    }
+  ],
   "description": "Voice-to-text chat injection for Guild Wars 2. Press your mic toggle key to record speech — the transcription is injected directly into the GW2 chat box.",
   "package": "VoxTyria.dll",
-  "url": "",
+  "url": "https://github.com/MortalJohn/VoxTyria",
   "dependencies": {
     "bh.blishhud": ">=0.11.8"
   },
