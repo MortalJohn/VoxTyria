@@ -108,7 +108,7 @@ namespace VoxTyria {
 
         private void ExtractAndLoadWhisperNatives() {
             string nativesDir = Path.Combine(
-                DirectoriesManager.GetFullDirectoryPath("WhisperModels"), "natives");
+                DirectoriesManager.GetFullDirectoryPath("whispermodels"), "natives");
             string runtimeDir = Path.Combine(nativesDir, "runtimes", "win-x64");
             Directory.CreateDirectory(runtimeDir);
 
@@ -304,7 +304,7 @@ namespace VoxTyria {
                 _microphoneDevice, _customDictionary,
                 _chatChannelPrefixEnabled, _emoteEnabled, _onlyWhenGw2Focused,
                 _showCornerIcon, _hideMicPopup,
-                DirectoriesManager.GetFullDirectoryPath("WhisperModels"),
+                DirectoriesManager.GetFullDirectoryPath("whispermodels"),
                 _texIcon);
 
             if (_showCornerIcon.Value) _cornerIcon.Visible = false;
@@ -451,11 +451,11 @@ namespace VoxTyria {
                 string language   = LanguageToCode(_transcriptionLanguage?.Value ?? WhisperLanguage.Auto);
                 WhisperModel size = _whisperModel?.Value ?? WhisperModel.Tiny;
 
-                string modelsDir = DirectoriesManager.GetFullDirectoryPath("WhisperModels");
+                string modelsDir = DirectoriesManager.GetFullDirectoryPath("whispermodels");
                 if (string.IsNullOrEmpty(modelsDir))
                     throw new InvalidOperationException(
-                        "Blish HUD did not provide the 'WhisperModels' directory path. " +
-                        "Check that manifest.json lists \"WhisperModels\" in directories_provided.");
+                        "Blish HUD did not provide the 'whispermodels' directory path. " +
+                        "Check that manifest.json lists \"whispermodels\" in directories_provided.");
 
                 string modelPath = await ModelManager.EnsureModelAsync(
                     language, size, modelsDir,
